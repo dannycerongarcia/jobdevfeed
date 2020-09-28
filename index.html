@@ -1,0 +1,304 @@
+<!DOCTYPE HTML>
+<html lang="eng" lang="es">
+
+<!-- Head -->
+
+<head>
+    <title>jobdevfeed</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap" rel="stylesheet">
+    <!-- add bootstrap just in case i need it -->
+
+</head>
+<!-- Body -->
+
+<body>
+    <style>
+        .main-background {
+            background: linear-gradient(#031163, #1fbfb8);
+            position: fixed;
+            min-height: 100vh;
+            height: 100%;
+            width: 100%;
+
+            left: 0;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        ;
+
+        .search-area {
+            margin-top: 12px;
+            /* margin-bottom: auto; */
+            margin-bottom: 18px;
+            height: 110%;
+            width: 100%;
+            background: white;
+            position: fix;
+        }
+
+        .item-box {
+
+            padding-left: 10px;
+            left: 0;
+            right: 0;
+            top: 0;
+            max-height: auto;
+            width: 65%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 12px;
+            background: white;
+            color: black;
+            border-radius: 7px;
+        }
+
+        .item-box:hover {
+
+            padding-left: 10px;
+            left: 0;
+            right: 0;
+            top: 0;
+            max-height: auto;
+            width: 65%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 12px;
+            background: white;
+            color: black;
+            border-radius: 7px;
+            box-shadow: 10px 9px 10px;
+            margin-bottom: 10px;
+            margin-left:16% ;
+        }
+
+       
+
+        .flex-box {
+            display: flex;
+        }
+
+        .job-city {
+            top: 0;
+            margin-left: auto;
+            margin-right: 10px;
+            padding-right: 10px;
+            color: gray;
+        }
+
+        .type {
+            margin-left: auto;
+            margin-right: 10px;
+            text-align: right;
+        }
+
+        .info-block {
+            width: 100%;
+            height: 100%;
+            display: none;
+
+            /* transition:transform 1.25s ease;
+            transform: scaleY(0); */
+
+        }
+
+
+
+        .container {
+            width: 25%;
+            height: 100%;
+            left: 0;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 10px;
+            border-radius: 90%;
+
+        }
+
+        .container:hover {
+            display: block;
+            left: -1%;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            /* transition: max-height 0.25s ease-in;
+            transform: scaleY(1); */
+
+        }
+
+        .arrow {
+            border: solid gray;
+            border-width: 0 10px 10px 0;
+            display: inline-block;
+            padding: 8px;
+            /* height: 20px; */
+        }
+
+        .container:hover .arrow {
+            border: solid #031163;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            /* padding: 3px; */
+
+        }
+
+        .container:hover .down {
+
+            transform: rotate(225deg);
+            -webkit-transform: rotate(225deg);
+        }
+
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+
+        .center-arrow {
+            text-align: center;
+        }
+
+        .container:hover .info-block {
+
+            display: block;
+
+        }
+
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+
+        }
+
+        .description {
+            font-family: Courier;
+            text-align: center;
+            width: 100%;
+            text-shadow: 2px 1px #05716c;
+            border-bottom: solid black;
+        }
+    </style>
+    <!-- search bar -->
+    <div class="search-area">
+        <input id="jobType" placeholder="job title, comanies, expeties" style="border-radius: 5px; height: 27px;" />
+        <input id="City" placeholder="City" style="border-radius: 5px; height: 27px;" />
+        <button style="height: 34px;" onclick="apiRequest()">Search &#x1F50D;</button>
+    </div>
+    <div class="main-background">
+        <h1 style="color: white; text-align: center; font-family: 'Roboto', sans-serif; text-shadow:5px 10px #05716c ;">
+            Find Exclusive/Secrete jobs on github</h1>
+
+        <div style="margin-top: 10px; margin-bottom: 100px;">
+            <ul id="list" style="color: white;">
+            </ul>
+        </div>
+    </div>
+    <!-- jost listing -->
+
+    <!-- functions -->
+    <script>
+        function apiRequest() {
+            // added proxyurl = "https://cors-anywhere.herokuapp.com/" to get around
+            // Access-Control-Allow-Origin
+            var job = document.getElementById('jobType').value;
+            let location = document.getElementById('City').value;
+            console.log(job+location)
+            if(job===''){
+                job = 'web'
+            }
+            const proxyurl = "https://cors-anywhere.herokuapp.com/";
+            var url =`https://jobs.github.com/positions.json?description=${job}&location=${location}`;
+            fetch(proxyurl + url)
+                // .then(data=>{return data.json})
+                .then(res => res.json())
+                .then(contents => {
+                    // console.log(contents[0]);
+                    makeUL(contents);
+                })
+                .catch(() => console.log("Can't access " + url))
+        }
+
+        function makeUL(dataArr) {
+            // reset list
+            document.getElementById("list").innerHTML = ""
+            var list;
+            var testArr = ["one", "two", "three", "two", "three", "two", "three", "two", "three", "two", "three", "two", "three", "two", "three"]
+            testArr = dataArr;
+            // Generating list
+            for (let i = 0; i < testArr.length; i++) {
+
+                var item = document.createElement('div');
+                //--------------- title and city -------------------------
+                var itemBox = document.createElement('div');
+                var container = document.createElement("div");
+                container.className = "container"
+                itemBox.className += "item-box";
+
+                var title = document.createElement('h4');
+
+                title.appendChild(document.createTextNode(testArr[i].title))
+                var city = document.createElement('h5');
+                city.appendChild(document.createTextNode(testArr[i].location))
+                city.className = "job-city";
+                var titleAndCity = document.createElement('div')
+                titleAndCity.className = "flex-box"
+                titleAndCity.appendChild(title)
+                titleAndCity.appendChild(city)
+                itemBox.appendChild(titleAndCity)
+                //--------------- end of title and city --------------------
+
+                // -------------- Company name/Employment type -------------
+
+                var compantLink = document.createElement('a');
+                compantLink.href = testArr[i].company_url
+                compantLink.appendChild(document.createTextNode(testArr[i].company))
+                var employmentType = '<div class="type">' + testArr[i].type + ' <br>' + '<p>' + testArr[i].created_at + '</p>' + '</div>'
+                    ;
+                var companyInfo = document.createElement('div')
+                companyInfo.className = "flex-box";
+                companyInfo.appendChild(compantLink);
+                companyInfo.innerHTML += employmentType;
+                itemBox.appendChild(companyInfo);
+                // -------------- End Company name/Employment type ---------
+
+
+
+                var infodiv = document.createElement("div");
+                infodiv.className = "info-block";
+                // -------------- Company logo -----------------------------
+                var CompanyLogo = '<img src="' + testArr[i].company_logo + '" class="center" alt="company Logo"></img>'
+                // -------------- End of Company logo ----------------------
+
+                //--------------- description content   --------------------
+                var jobDescription = '<h4 class="description">Description</h4>' + testArr[i].description
+                //------------ End description content   --------------------
+                var howToApplay = '<h4 class="description">How to apply</h4>' + testArr[i].how_to_apply;
+                infodiv.innerHTML = CompanyLogo + jobDescription + howToApplay
+                itemBox.appendChild(infodiv);
+
+                //----------------------------------------------------------- down arrow -------------------------------------------------------
+                var arrowDiv = document.createElement("div");
+                arrowDiv.className = "center-arrow"
+                var iElement = document.createElement("i");
+                iElement.className = "arrow down"
+                arrowDiv.appendChild(iElement)
+                container.appendChild(infodiv)
+                container.appendChild(arrowDiv)
+
+                itemBox.appendChild(container)
+
+
+                item.appendChild(itemBox)
+                document.getElementById("list").appendChild(item)
+            }
+        }
+        makeUL() 
+    </script>
+</body>
+
+</html>
